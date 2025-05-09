@@ -1,5 +1,14 @@
 using UnityEngine;
 
+
+public enum MovementState
+{
+    Walking,
+    Running,
+    Jumping,
+    Crouching
+}
+
 public class FirstPersonController : MonoBehaviour
 {
     [Header("Movement Speeds")]
@@ -9,6 +18,8 @@ public class FirstPersonController : MonoBehaviour
     private float sprintMultiplier = 2.0f;
     [SerializeField]
     private float crouchMultiplier = 0.5f;
+
+    public bool Spinting => playerInputHandler.SprintTriggered;
 
     [Header("Jump Parameters")]
     [SerializeField]
@@ -21,6 +32,20 @@ public class FirstPersonController : MonoBehaviour
     private float mouseSensitivity = 1.0f;
     [SerializeField]
     private float upDownLookRange = 80f;
+
+    [Header("Crouching")]
+    [SerializeField]
+    private float crouchHeight = 1.2f;
+    [SerializeField]
+    private Vector3 crouchCenter = new(0,0.595f,0);
+    [SerializeField]
+    private float standHeight;
+    private Vector3 standCenter;
+    public bool Crouching => playerInputHandler.CrouchTriggered;
+
+    [Header("Values")]
+    public MovementState State;
+
 
     [Header("References")]
     [SerializeField]
@@ -40,7 +65,10 @@ public class FirstPersonController : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        
+
+        //Crouch values
+        standCenter = characterController.center;
+        standHeight = characterController.height;
     }
 
     private void Update()
@@ -64,7 +92,8 @@ public class FirstPersonController : MonoBehaviour
         {
             currentMovement.y = -0.5f;
 
-            if (playerInputHandler.JumpTriggered) 
+            //animator.IsInTransition()
+            if (playerInputHandler.JumpTriggered && !playerInputHandler.CrouchTriggered) 
             {
                 currentMovement.y = jumpForce;
             }
@@ -82,6 +111,7 @@ public class FirstPersonController : MonoBehaviour
         currentMovement.z = worldDirection.z * CurrentSpeed;
 
         HandleJumping();
+        HandleCrouch();
         characterController.Move(currentMovement * Time.deltaTime);
     }
 
@@ -104,4 +134,22 @@ public class FirstPersonController : MonoBehaviour
         ApplyHorizontalRotation(mouseXRotation);
         ApplyVerticalRotation(mouseYRotation);
     }
+
+    private void HandleCrouch() 
+    {
+        if (characterController.isGrounded) 
+        {
+            Vector3 targetCenter = standCenter;
+            float targetHeight = standHeight;
+
+            if (playerInputHandler.CrouchTriggered && !playerInputHandler.SprintTriggered) 
+            {
+                targetCenter = crouchCenter;
+                targetHeight = crouchHeight;
+            }
+            characterController.height = targetHeight;
+            characterController.center = targetCenter;
+        }
+    }
+
 }

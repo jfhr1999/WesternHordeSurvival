@@ -62,11 +62,9 @@ public class PlayerInputHandler : MonoBehaviour
         JumpAction.performed += inputInfo => JumpTriggered = true;
         JumpAction.canceled += inputInfo => JumpTriggered = false;
 
-        SprintAction.performed += inputInfo => SprintTriggered = true;
-        SprintAction.canceled += inputInfo => SprintTriggered = false;
+        SprintAction.performed += inputInfo => SprintTriggered = !SprintTriggered;
 
-        CrouchAction.performed += inputInfo => CrouchTriggered = true;
-        CrouchAction.canceled += inputInfo => CrouchTriggered = false;
+        CrouchAction.performed += inputInfo => CrouchTriggered = !CrouchTriggered;
     }
 
     private void OnEnable()
