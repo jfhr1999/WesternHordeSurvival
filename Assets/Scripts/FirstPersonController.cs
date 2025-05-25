@@ -18,6 +18,8 @@ public class FirstPersonController : MonoBehaviour
     private float sprintMultiplier = 2.0f;
     [SerializeField]
     private float crouchMultiplier = 0.5f;
+    [SerializeField]
+    private float animationBlendSpeed = 5.9f;
 
     public bool Spinting => playerInputHandler.SprintTriggered;
 
@@ -54,6 +56,8 @@ public class FirstPersonController : MonoBehaviour
     private Camera mainCamera;
     [SerializeField]
     private PlayerInputHandler playerInputHandler;
+    [SerializeField]
+    private CharacterAnimationController characterAnimationController;
 
     private Vector3 currentMovement;
     private float verticalRotation;
@@ -80,6 +84,7 @@ public class FirstPersonController : MonoBehaviour
     private Vector3 CalculateWorldDirection() 
     {
         Vector3 inputDirection = new Vector3(playerInputHandler.MovementInput.x, 0f, playerInputHandler.MovementInput.y);
+        inputDirection = Vector3.ClampMagnitude(inputDirection, CurrentSpeed);
 
         Vector3 worldDirection = transform.TransformDirection(inputDirection);
 
@@ -112,6 +117,12 @@ public class FirstPersonController : MonoBehaviour
 
         HandleJumping();
         HandleCrouch();
+
+        //Handle the inputs for animations https://www.youtube.com/watch?v=xWHsS7ju3m8
+        float xParam = Mathf.Lerp(transform.InverseTransformDirection(currentMovement).x, characterController.transform.forward.x * CurrentSpeed, animationBlendSpeed * Time.deltaTime);
+        float yParam = Mathf.Lerp(transform.InverseTransformDirection(currentMovement).z, characterController.transform.forward.z * CurrentSpeed, animationBlendSpeed * Time.deltaTime);
+
+        characterAnimationController.Move(xParam, yParam);
         characterController.Move(currentMovement * Time.deltaTime);
     }
 
@@ -146,6 +157,8 @@ public class FirstPersonController : MonoBehaviour
             {
                 targetCenter = crouchCenter;
                 targetHeight = crouchHeight;
+
+                characterAnimationController.Crouch(playerInputHandler.CrouchTriggered);
             }
             characterController.height = targetHeight;
             characterController.center = targetCenter;
