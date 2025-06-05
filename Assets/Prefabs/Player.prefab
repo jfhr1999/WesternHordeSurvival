@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 7353295130649864302}
   - component: {fileID: 8685582780196046930}
   - component: {fileID: 4569291222830485619}
-  - component: {fileID: 6170833587372708109}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -77,6 +76,7 @@ MonoBehaviour:
   walkSpeed: 3
   sprintMultiplier: 2
   crouchMultiplier: 0.5
+  animationBlendSpeed: 5.9
   jumpForce: 5
   gravityMultiplier: 1
   mouseSensitivity: 0.1
@@ -88,7 +88,7 @@ MonoBehaviour:
   characterController: {fileID: 7353295130649864302}
   mainCamera: {fileID: 2410751238022777437}
   playerInputHandler: {fileID: 4569291222830485619}
-  characterAnimationController: {fileID: 6170833587372708109}
+  characterAnimationController: {fileID: 9132152313855668797}
 --- !u!114 &4569291222830485619
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -108,20 +108,6 @@ MonoBehaviour:
   jump: Jump
   sprint: Sprint
   crouch: Crouch
---- !u!114 &6170833587372708109
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 791189556575449313}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 397f51a8916cda74b98d8ebe1ae46345, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  CharacterModel: {fileID: 3823388539466068941}
-  CharacterAnimator: {fileID: 7101640967358512046}
 --- !u!1 &3734585439097989225
 GameObject:
   m_ObjectHideFlags: 0
@@ -318,6 +304,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a815d67dfefa7694e95a146c4621f470, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7101640967358512046}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a815d67dfefa7694e95a146c4621f470, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9132152313855668797}
   m_SourcePrefab: {fileID: 100100000, guid: a815d67dfefa7694e95a146c4621f470, type: 3}
 --- !u!1 &3823388539466068941 stripped
 GameObject:
@@ -346,6 +335,21 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &9132152313855668797
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3823388539466068941}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 397f51a8916cda74b98d8ebe1ae46345, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CharacterModel: {fileID: 3823388539466068941}
+  CharacterAnimator: {fileID: 7101640967358512046}
+  FPSController: {fileID: 8685582780196046930}
 --- !u!4 &4486912554406046071 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: a815d67dfefa7694e95a146c4621f470, type: 3}

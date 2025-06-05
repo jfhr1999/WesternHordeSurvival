@@ -39,7 +39,7 @@ public class FirstPersonController : MonoBehaviour
     [SerializeField]
     private float crouchHeight = 1.2f;
     [SerializeField]
-    private Vector3 crouchCenter = new(0,0.595f,0);
+    private Vector3 crouchCenter = new(0, 0.595f, 0);
     [SerializeField]
     private float standHeight;
     private Vector3 standCenter;
@@ -63,6 +63,10 @@ public class FirstPersonController : MonoBehaviour
     private float verticalRotation;
 
     private float CurrentSpeed => walkSpeed * (playerInputHandler.SprintTriggered ? sprintMultiplier : playerInputHandler.CrouchTriggered ? crouchMultiplier : 1);
+
+    //Jump Auxiliary
+    private bool applyJump = false;
+    public bool ApplyJump { get => applyJump; set => applyJump = value; }
 
 
     void Start()
@@ -97,10 +101,14 @@ public class FirstPersonController : MonoBehaviour
         {
             currentMovement.y = -0.5f;
 
-            //animator.IsInTransition()
             if (playerInputHandler.JumpTriggered && !playerInputHandler.CrouchTriggered) 
             {
-                currentMovement.y = jumpForce;
+                characterAnimationController.Jump();
+                
+            }
+            else if (!playerInputHandler.CrouchTriggered)
+            {
+                ExecuteJump();
             }
         }
         else 
@@ -109,8 +117,17 @@ public class FirstPersonController : MonoBehaviour
         }
     }
 
+    private void ExecuteJump() 
+    {
+        if (!applyJump) return;
+        currentMovement.y = jumpForce;
+        characterAnimationController.ResetJumpTrigger();
+        applyJump = false;
+    }
+
     private void HandleMovement() 
     {
+       
         Vector3 worldDirection = CalculateWorldDirection();
         currentMovement.x = worldDirection.x * CurrentSpeed;
         currentMovement.z = worldDirection.z * CurrentSpeed;
@@ -118,12 +135,15 @@ public class FirstPersonController : MonoBehaviour
         HandleJumping();
         HandleCrouch();
 
+        
         //Handle the inputs for animations https://www.youtube.com/watch?v=xWHsS7ju3m8
         float xParam = Mathf.Lerp(transform.InverseTransformDirection(currentMovement).x, characterController.transform.forward.x * CurrentSpeed, animationBlendSpeed * Time.deltaTime);
         float yParam = Mathf.Lerp(transform.InverseTransformDirection(currentMovement).z, characterController.transform.forward.z * CurrentSpeed, animationBlendSpeed * Time.deltaTime);
+        float zParam = Mathf.Lerp(transform.InverseTransformDirection(currentMovement).y, characterController.transform.forward.z * CurrentSpeed, animationBlendSpeed * Time.deltaTime);
 
         characterAnimationController.Move(xParam, yParam);
         characterController.Move(currentMovement * Time.deltaTime);
+        UpdateCurrentState();
     }
 
     private void ApplyHorizontalRotation(float rotationAmount) 
@@ -163,6 +183,12 @@ public class FirstPersonController : MonoBehaviour
             characterController.height = targetHeight;
             characterController.center = targetCenter;
         }
+    }
+
+    private void UpdateCurrentState()
+    {
+        characterAnimationController.Falling(!characterController.isGrounded);
+        characterAnimationController.Grounded(characterController.isGrounded);
     }
 
 }
