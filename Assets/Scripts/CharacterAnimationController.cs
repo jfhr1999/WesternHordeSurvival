@@ -19,6 +19,7 @@ public class CharacterAnimationController : MonoBehaviour
     private int _jumpHash;
     private int _fallingHash;
     private int _GroundHash;
+    private int _CroucHash;
 
     private void Start()
     {
@@ -29,6 +30,7 @@ public class CharacterAnimationController : MonoBehaviour
         _jumpHash = Animator.StringToHash("Jump");
         _fallingHash = Animator.StringToHash("Falling");
         _GroundHash = Animator.StringToHash("Grounded");
+        _CroucHash = Animator.StringToHash("Crouch");
     }
 
     public void Move(float x, float y) 
@@ -44,7 +46,7 @@ public class CharacterAnimationController : MonoBehaviour
 
     public void Crouch(bool trigger) 
     {
-        CharacterAnimator.SetBool("Crouch", trigger);
+        CharacterAnimator.SetBool(_CroucHash, trigger);
     }
 
     public void Jump()

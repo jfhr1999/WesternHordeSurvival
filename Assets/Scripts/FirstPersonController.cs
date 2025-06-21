@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Rendering;
 
 
 public enum MovementState
@@ -43,7 +44,13 @@ public class FirstPersonController : MonoBehaviour
     [SerializeField]
     private float standHeight;
     private Vector3 standCenter;
-    public bool Crouching => playerInputHandler.CrouchTriggered;
+
+    private bool IsCrouching = false;
+    private float CurrentTargetHeight;
+    private Vector3 CurrentTargetCenter;
+    private float CurrentCameraPosition;
+
+
 
     [Header("Values")]
     public MovementState State;
@@ -61,6 +68,8 @@ public class FirstPersonController : MonoBehaviour
 
     private Vector3 currentMovement;
     private float verticalRotation;
+    private float startingCameraPostition;
+    
 
     private float CurrentSpeed => walkSpeed * (playerInputHandler.SprintTriggered ? sprintMultiplier : playerInputHandler.CrouchTriggered ? crouchMultiplier : 1);
 
@@ -77,6 +86,10 @@ public class FirstPersonController : MonoBehaviour
         //Crouch values
         standCenter = characterController.center;
         standHeight = characterController.height;
+        startingCameraPostition = mainCamera.transform.position.y;
+        CurrentCameraPosition = startingCameraPostition;
+        CurrentTargetHeight = standHeight;
+        CurrentTargetCenter = standCenter;
     }
 
     private void Update()
@@ -101,12 +114,12 @@ public class FirstPersonController : MonoBehaviour
         {
             currentMovement.y = -0.5f;
 
-            if (playerInputHandler.JumpTriggered && !playerInputHandler.CrouchTriggered) 
+            if (playerInputHandler.JumpTriggered && !playerInputHandler.CrouchTriggered && !IsCrouching) 
             {
                 characterAnimationController.Jump();
                 
             }
-            else if (!playerInputHandler.CrouchTriggered)
+            else if (!playerInputHandler.CrouchTriggered && !IsCrouching)
             {
                 ExecuteJump();
             }
@@ -170,19 +183,36 @@ public class FirstPersonController : MonoBehaviour
     {
         if (characterController.isGrounded) 
         {
-            Vector3 targetCenter = standCenter;
-            float targetHeight = standHeight;
-
             if (playerInputHandler.CrouchTriggered && !playerInputHandler.SprintTriggered) 
             {
-                targetCenter = crouchCenter;
-                targetHeight = crouchHeight;
-
-                characterAnimationController.Crouch(playerInputHandler.CrouchTriggered);
+                if (!IsCrouching)
+                {
+                    Crouch();
+                }
             }
-            characterController.height = targetHeight;
-            characterController.center = targetCenter;
+            else
+            {
+                if (IsCrouching)
+                {
+                    TryStandUp();
+                }
+            }
+
+            characterController.height = Mathf.Lerp(characterController.height, CurrentTargetHeight, Time.deltaTime * 3);
+            characterController.center = Vector3.Lerp(characterController.center, CurrentTargetCenter, Time.deltaTime * 3);
+            mainCamera.transform.position = new Vector3(mainCamera.transform.position.x, CurrentCameraPosition, mainCamera.transform.position.z);
+
+            characterAnimationController.Crouch(IsCrouching);
+            
         }
+    }
+
+    private void Crouch()
+    {
+        IsCrouching = true;
+        CurrentTargetHeight = crouchHeight;
+        CurrentTargetCenter = crouchCenter;
+        CurrentCameraPosition = crouchHeight;
     }
 
     private void UpdateCurrentState()
@@ -190,5 +220,18 @@ public class FirstPersonController : MonoBehaviour
         characterAnimationController.Falling(!characterController.isGrounded);
         characterAnimationController.Grounded(characterController.isGrounded);
     }
+    
+    private void TryStandUp()
+    {
+        Vector3 rayOrigin = transform.position + characterController.center + Vector3.up * (characterController.height / 2f);
+        float castDistance = standHeight - crouchHeight + 0.1f; // Add a small buffer
 
+        if (!Physics.Raycast(rayOrigin, Vector3.up, 3))
+        {
+            IsCrouching = false;
+            CurrentCameraPosition = startingCameraPostition;
+            CurrentTargetCenter = standCenter;
+            CurrentTargetHeight = standHeight;
+        }
+    }
 }
