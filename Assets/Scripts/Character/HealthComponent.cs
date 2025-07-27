@@ -74,6 +74,12 @@ public class HealthComponent : MonoBehaviour, IDamageable
         // SetResistance(DamageType.Ice, 1.5f);  // Takes 150% ice damage (vulnerability)
     }
 
+    public void Initialize(float Health)
+    {
+        _maxHealth = Health;
+        Initialize();
+    }
+
     public void TakeDamage(DamageInfo damageInfo)
     {
         if (!IsAlive) return; // Cannot take damage if already dead

@@ -32,6 +32,13 @@ public class DamageDealer : MonoBehaviour
         }
     }
 
+    public void Initialize(float Damage, DamageType type)
+    {
+        _baseDamageAmount = Damage;
+        _damageType = type;
+        Initialize();
+    }
+
     // Example for a projectile hitting something
     void OnCollisionEnter(Collision collision)
     {
