@@ -20,7 +20,7 @@ public class EnemyAttackComponent : MonoBehaviour
         attackCooldown = cooldown;
         lastAttackTime = -cooldown; // Allows immediate first attack
         Type = type;
-        DamageDealer.Initialize(damage, type);
+        DamageDealer.Initialize(damage, type, this.gameObject);
 
     }
 

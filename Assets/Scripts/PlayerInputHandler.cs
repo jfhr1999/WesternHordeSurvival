@@ -28,11 +28,15 @@ public class PlayerInputHandler : MonoBehaviour
     [SerializeField]
     private string crouch = "Crouch";
 
+    [SerializeField]
+    private string attack = "Attack";
+
     private InputAction MovementAction;
     private InputAction RotationAction;
     private InputAction JumpAction;
     private InputAction SprintAction;
     private InputAction CrouchAction;
+    public InputAction AttackAction;
 
     public Vector2 MovementInput { get; private set; }
     public Vector2 RotationInput { get; private set; }
@@ -48,6 +52,7 @@ public class PlayerInputHandler : MonoBehaviour
         JumpAction = mapReference.FindAction(jump);
         SprintAction = mapReference.FindAction(sprint);
         CrouchAction = mapReference.FindAction(crouch);
+        AttackAction = mapReference.FindAction(attack);
         SubscribeActionValuesToInputEvents();
     }
 
@@ -65,6 +70,7 @@ public class PlayerInputHandler : MonoBehaviour
         SprintAction.performed += inputInfo => SprintTriggered = !SprintTriggered;
 
         CrouchAction.performed += inputInfo => CrouchTriggered = !CrouchTriggered;
+
     }
 
     private void OnEnable()

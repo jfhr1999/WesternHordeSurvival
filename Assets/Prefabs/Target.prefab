@@ -47,6 +47,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6886f2a5605683c429c801e6f6af9c09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Health: {fileID: 4695253519938717744}
 --- !u!143 &3920347901473790071
 CharacterController:
   m_ObjectHideFlags: 0
@@ -87,7 +88,7 @@ MonoBehaviour:
   _maxHealth: 100
   _currentHealth: 0
   _damageTypeResistances:
-  - 0
+  - 1
   OnHealthChangedUnityEvent:
     m_PersistentCalls:
       m_Calls: []

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
 
 
@@ -50,6 +51,10 @@ public class FirstPersonController : MonoBehaviour
     private Vector3 CurrentTargetCenter;
     private float CurrentCameraPosition;
 
+    [Header("Combat")]
+    [SerializeField]
+    private Weapon CurrentWeapon;
+
 
 
     [Header("Values")]
@@ -90,6 +95,7 @@ public class FirstPersonController : MonoBehaviour
         CurrentCameraPosition = startingCameraPostition;
         CurrentTargetHeight = standHeight;
         CurrentTargetCenter = standCenter;
+        playerInputHandler.AttackAction.performed += OnAttackPerformed;
     }
 
     private void Update()
@@ -233,5 +239,10 @@ public class FirstPersonController : MonoBehaviour
             CurrentTargetCenter = standCenter;
             CurrentTargetHeight = standHeight;
         }
+    }
+
+    private void OnAttackPerformed(InputAction.CallbackContext context)
+    {
+        CurrentWeapon.Attack();
     }
 }

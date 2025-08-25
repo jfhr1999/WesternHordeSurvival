@@ -2,8 +2,10 @@ using UnityEngine;
 
 public class Entity : MonoBehaviour
 {
+    [SerializeField]
+    private HealthComponent Health;
     private void Awake()
     {
-        //Add calls for each component that should be handled by entity controller.
+        Health.Initialize(Health.MaxHealth);
     }
 }

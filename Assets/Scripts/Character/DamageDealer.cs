@@ -17,7 +17,7 @@ public class DamageDealer : MonoBehaviour
 
     void Start()
     {
-        Initialize();
+
     }
 
     public void Initialize(GameObject source = null)
@@ -32,11 +32,11 @@ public class DamageDealer : MonoBehaviour
         }
     }
 
-    public void Initialize(float Damage, DamageType type)
+    public void Initialize(float Damage, DamageType type, GameObject source)
     {
         _baseDamageAmount = Damage;
         _damageType = type;
-        Initialize();
+        Initialize(source);
     }
 
     // Example for a projectile hitting something
@@ -62,6 +62,19 @@ public class DamageDealer : MonoBehaviour
         // }
     }
 
+    public void ApplyDamageToRaycastHit(RaycastHit hit)
+    {
+        // The target GameObject is the one hit by the raycast
+        GameObject target = hit.transform.gameObject;
+
+        // Extract the hit point and hit normal from the RaycastHit object
+        Vector3 hitPoint = hit.point;
+        Vector3 hitNormal = hit.normal;
+
+        // Call the existing method to apply damage
+        ApplyDamageToTarget(target, hitPoint, hitNormal);
+    }
+
     /// <summary>
     /// Tries to apply damage to a target GameObject.
     /// </summary>
@@ -70,7 +83,16 @@ public class DamageDealer : MonoBehaviour
     /// <param name="hitNormal">The normal of the impact surface.</param>
     public void ApplyDamageToTarget(GameObject target, Vector3 hitPoint, Vector3 hitNormal)
     {
-        IDamageable damageable = target.GetComponent<IDamageable>();
+        IDamageable damageable = null;
+        if (target.transform.parent != null) 
+        {
+            damageable = target.GetComponentInParent<IDamageable>();
+        }
+        else
+        {
+            damageable = target.GetComponent<IDamageable>();
+        }
+
         if (damageable != null)
         {
             bool isCrit = _isCriticalHitChance && Random.value < _criticalChance;
