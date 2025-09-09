@@ -58,6 +58,7 @@ public class TimeManager : MonoBehaviour
     {
         FirstTexture = (Texture2D)RenderSettings.skybox.GetTexture("_Texture1");
         SecondTexture = (Texture2D)RenderSettings.skybox.GetTexture("_Texture2");
+        GeneralManager.TimeManager = this;
     }
 
     public void Update()
