@@ -162,6 +162,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6886f2a5605683c429c801e6f6af9c09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Health: {fileID: 0}
 --- !u!143 &8731562792870292780
 CharacterController:
   m_ObjectHideFlags: 0
@@ -200,7 +201,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _maxHealth: 100
-  _currentHealth: 0
+  _currentHealth: 100
   _damageTypeResistances:
   - 0
   OnHealthChangedUnityEvent:

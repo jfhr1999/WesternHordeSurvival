@@ -49,7 +49,10 @@ public class TimeManager : MonoBehaviour
 
     private float tempSecond;
 
-    public bool progressTime;
+    [SerializeField]
+    private bool progressTime;
+
+    public bool TimeProgressActive { set { progressTime = value; } }
 
     private Texture2D FirstTexture;
     private Texture2D SecondTexture;
