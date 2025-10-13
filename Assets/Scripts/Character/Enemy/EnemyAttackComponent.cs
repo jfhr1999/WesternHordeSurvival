@@ -26,11 +26,15 @@ public class EnemyAttackComponent : MonoBehaviour
 
     public void TryAttack(GameObject target)
     {
-        if (Time.time >= lastAttackTime + attackCooldown)
+        if (DamageDealer != null) 
         {
-            PerformAttack(target);
-            lastAttackTime = Time.time;
+            if (Time.time >= lastAttackTime + attackCooldown)
+            {
+                PerformAttack(target);
+                lastAttackTime = Time.time;
+            }
         }
+        
     }
 
     private void PerformAttack(GameObject target)
