@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class EnemyAttackComponent : MonoBehaviour
 {
-    private float attackDamage;
+    private float attackDamage;  
     private float attackRange; // This will primarily be used by the EnemyController for decision making
     private float attackCooldown;
     private float lastAttackTime;
@@ -10,7 +10,7 @@ public class EnemyAttackComponent : MonoBehaviour
 
 
     [SerializeField]
-    private DamageDealer DamageDealer;
+    private Weapon Weapon;
 
 
     public void Initialize(float damage, float range, float cooldown, DamageType type)
@@ -20,13 +20,13 @@ public class EnemyAttackComponent : MonoBehaviour
         attackCooldown = cooldown;
         lastAttackTime = -cooldown; // Allows immediate first attack
         Type = type;
-        DamageDealer.Initialize(damage, type, this.gameObject);
+        Weapon?.Initialize(damage, type, this.gameObject);
 
     }
 
     public void TryAttack(GameObject target)
     {
-        if (DamageDealer != null) 
+        if (Weapon != null) 
         {
             if (Time.time >= lastAttackTime + attackCooldown)
             {
@@ -39,12 +39,14 @@ public class EnemyAttackComponent : MonoBehaviour
 
     private void PerformAttack(GameObject target)
     {
-        
-
         Debug.Log($"{gameObject.name} attacks {target.name} for {attackDamage} damage!");
-        
-        //To Do: handle cases for attacks
-     
+
+        //Use weapons
+
+        if (Weapon != null) 
+        {
+            Weapon.Attack();
+        }
         
         // Play attack animation, sound, visual effects here
         // For example: GetComponent<AudioSource>()?.PlayOneShot(attackSound);

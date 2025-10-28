@@ -15,7 +15,7 @@ MonoBehaviour:
   maxHealth: 100
   movementSpeed: 3
   attackDamage: 10
-  attackRange: 2
+  attackRange: 10
   attackCooldown: 2
   damageType: 0
   enemyModelPrefab: {fileID: 0}

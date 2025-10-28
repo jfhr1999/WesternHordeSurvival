@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public enum WeaponType
@@ -15,6 +16,7 @@ public class Weapon : MonoBehaviour
     private WeaponType WeaponType;
     [Header("Damage Settings")]
     [SerializeField] private DamageDealer _damageDealer;
+    [SerializeField] private GameObject Owner;
 
     [Header("Hitscan Settings")]
     [SerializeField]
@@ -33,12 +35,36 @@ public class Weapon : MonoBehaviour
     [SerializeField]
     private float BulletPrefabLifeTime = 3f;
 
+    [Header("Melee Settings")]
+    [SerializeField]
+    private Collider MeleeCollider; // Drag the Box Collider here in the Inspector
+    [SerializeField]
+    private float AttackDuration = 0.2f; // How long the swing lasts (in seconds)
+
+
     private void Awake()
     {
-        if(_damageDealer != null)
+
+    }
+
+    public void Initialize()
+    {
+        if (_damageDealer != null)
         {
-            _damageDealer.Initialize(this.gameObject);
+            if (Owner != null) 
+            {
+                _damageDealer.Initialize(this.Owner);
+            }
+            else
+            {
+                _damageDealer.Initialize(this.gameObject);
+            } 
         }
+    }
+
+    public void Initialize(float Damage, DamageType type, GameObject source)
+    {
+        _damageDealer.Initialize(Damage,type,source);
     }
 
     // Update is called once per frame
@@ -83,5 +109,24 @@ public class Weapon : MonoBehaviour
                 Destroy(newBullet, BulletPrefabLifeTime);
             }
         }
+        else if(WeaponType == WeaponType.Melee) 
+        {
+            if (MeleeCollider != null && !MeleeCollider.enabled)
+            {
+                StartCoroutine(MeleeSwingCoroutine());
+            }
+        }
+    }
+
+    private IEnumerator MeleeSwingCoroutine()
+    {
+        // 1. Enable the collider (start of the swing)
+        MeleeCollider.enabled = true;
+
+        // 2. Wait for the duration of the attack
+        yield return new WaitForSeconds(AttackDuration);
+
+        // 3. Disable the collider (end of the swing)
+        MeleeCollider.enabled = false;
     }
 }

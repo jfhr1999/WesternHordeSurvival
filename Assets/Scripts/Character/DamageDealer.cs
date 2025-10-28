@@ -26,7 +26,7 @@ public class DamageDealer : MonoBehaviour
         {
             _damageSource = this.gameObject; // Default to self if not set
         }
-        else
+        else if(_damageSource == null)
         {
             _damageSource = source;
         }
@@ -82,7 +82,8 @@ public class DamageDealer : MonoBehaviour
     /// <param name="hitPoint">The point of impact.</param>
     /// <param name="hitNormal">The normal of the impact surface.</param>
     public void ApplyDamageToTarget(GameObject target, Vector3 hitPoint, Vector3 hitNormal)
-    {
+    {      
+
         IDamageable damageable = null;
         if (target.transform.parent != null) 
         {
@@ -91,6 +92,15 @@ public class DamageDealer : MonoBehaviour
         else
         {
             damageable = target.GetComponent<IDamageable>();
+        }
+
+        if (_damageSource != null && target == _damageSource)
+        {
+            return;
+        }
+        if (_damageSource != null && target.transform.IsChildOf(_damageSource.transform))
+        {
+            return;
         }
 
         if (damageable != null)

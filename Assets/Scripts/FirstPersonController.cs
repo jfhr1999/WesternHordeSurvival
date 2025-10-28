@@ -96,6 +96,7 @@ public class FirstPersonController : MonoBehaviour
         CurrentTargetHeight = standHeight;
         CurrentTargetCenter = standCenter;
         playerInputHandler.AttackAction.performed += OnAttackPerformed;
+        CurrentWeapon.Initialize();
     }
 
     private void Update()
@@ -243,6 +244,6 @@ public class FirstPersonController : MonoBehaviour
 
     private void OnAttackPerformed(InputAction.CallbackContext context)
     {
-        CurrentWeapon.Attack();
+        CurrentWeapon?.Attack();
     }
 }

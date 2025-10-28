@@ -23,6 +23,9 @@ public class EnemyMovementComponent : MonoBehaviour
         if (agent.isOnNavMesh) // Always check if agent is on NavMesh before setting destination
         {
             agent.SetDestination(targetPosition);
+            agent.updateRotation = false;
+            this.gameObject.transform.LookAt(targetPosition);
+            agent.updateRotation = true;
         }
         else
         {
