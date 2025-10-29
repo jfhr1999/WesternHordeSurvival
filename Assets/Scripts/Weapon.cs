@@ -18,6 +18,9 @@ public class Weapon : MonoBehaviour
     [SerializeField] private DamageDealer _damageDealer;
     [SerializeField] private GameObject Owner;
 
+    [Header("Debug Settings")]
+    [SerializeField] private LineRenderer raycastDebugger;
+
     [Header("Hitscan Settings")]
     [SerializeField]
     private float Range = 100f;
@@ -60,6 +63,11 @@ public class Weapon : MonoBehaviour
                 _damageDealer.Initialize(this.gameObject);
             } 
         }
+        if (raycastDebugger)
+        {
+            raycastDebugger.enabled = true;
+            raycastDebugger.positionCount = 2;
+        }
     }
 
     public void Initialize(float Damage, DamageType type, GameObject source)
@@ -78,13 +86,20 @@ public class Weapon : MonoBehaviour
         if (WeaponType == WeaponType.HitScan)
         {
             RaycastHit hit;
+             
             if (Physics.Raycast(RaycastOrigin.position, RaycastOrigin.transform.forward, out hit, Range))
             {
+                if (raycastDebugger != null)
+                {
+                    raycastDebugger.SetPosition(0, RaycastOrigin.position);
+                    raycastDebugger.SetPosition(0, hit.point);
+                }
                 if (_damageDealer != null)
                 {
                     _damageDealer.ApplyDamageToRaycastHit(hit);
                 }
             }
+            
         }
         else if (WeaponType == WeaponType.ProjectileWeapon)
         {
